@@ -1,0 +1,238 @@
+﻿@model IEnumerable<Onboard2.Models.MyStore>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<link href="~/Content/bootstrap-flatly.css" rel="stylesheet" />
+<script src="~/Scripts/bootstrap.min.js"></script>
+
+<br />
+
+<a href="#" class="btn btn-warning" onclick="AddEditStore(0)">Insert New Store</a>
+<br /><br />
+
+
+<table class="table table-striped">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Address)
+        </th>
+        <th>Details</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr id="row_@item.Id">
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td><a href="#" class="btn btn-info btn-sm" onclick="ShowStore(@item.Id)"><i class="glyphicon glyphicon-eye-open"></i> Details</a> </td>
+
+            <td><a href="#" class="btn btn-success btn-sm" onclick="AddEditStore(@item.Id)"><i class="glyphicon glyphicon-pencil"></i> Edit</a> </td>
+
+            <td><a href="#" class="btn btn-danger btn-sm" onclick="ConfirmDelete(@item.Id)"><i class="glyphicon glyphicon-trash "></i> Delete</a> </td>
+        </tr>
+    }
+
+</table>
+
+<!-- DELETE MODAL -->
+<div class="modal fade" id="myDeleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">Delete Store</h3>
+            </div>
+            <div class="modal-body">
+                <h4>Are you sure ? You want to delete this. </h4>
+
+                <div style="text-align:center;display:none" id="loaderDiv">
+                    <img src="~/Content/InternetSlowdown_Day.gif" width="150" />
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                <a href="#" class="btn btn-success" onclick="DeleteProduct()">Confirm</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SHOW MODAL -->
+
+<div class="modal fade" id="myShowModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">Details</h3>
+            </div>
+            <div class="modal-body" id="MyModalBodyShow">
+
+                <!-- THIS PART WILL BE INSERTED WITH PARTIAL VIEW ShowProduct.cshtml -->
+
+
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- EDIT MODAL -->
+
+<div class="modal fade" id="myEditModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">AddEdit Store</h3>
+            </div>
+            <div class="modal-body" id="MyModalBodyEdit">
+
+                <!-- THIS PART WILL BE INSERTED WITH PARTIAL VEIW AddOrEdit.cshtml -->
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- CREATE PRODUCT MODAL -->
+<div id="myCreateModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close" data-dismis="modal">&times;</a>
+                <h3 class="modal-title">Create Product</h3>
+
+            </div>
+
+            <div class="modal-body">
+
+
+                <!--GIF LOADER WHEN THE BUTTON IS SUBMITTED-->
+                <div id="loaderDiv" style="text-align: center; display: none">
+                    <img src="~/Content/Internetslowdown_Day.gif" width="64" />
+                </div>
+
+
+            </div><!-- class = modal-body -->
+
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                <input type="submit" value="Create" class="btn btn-success" id="btnSubmit" />
+            </div>
+
+        </div><!--class=modal-content-->
+    </div><!--class=modal-dialog-->
+</div>
+<!-- CREATE MODAL PRODUCT END -->
+@*hidden field for storing current employeeId*@
+<input type="hidden" id="hiddenStoreId" />
+
+<script>
+
+    var ShowStore;
+    var AddEditStore;
+    var ConfirmDelete;
+
+
+    $(document).ready(function () {
+
+        ///// => ShowProduct() <= \\\\\
+        ShowStore = function (Id) {
+            $.ajax({
+
+                type: "POST",
+                url: "/Store/ShowStore ",
+                data: { Id: Id },
+                success: function (response) {
+                    $("#MyModalBodyShow").html(response);
+                    $("#myShowModal").modal("show");
+
+
+                }
+
+            })
+        }
+
+
+        ///// => AddOrEdit() <= \\\\\
+        AddEditStore = function (Id) {
+            var url = "/Store/AddOrEdit?Id=" + Id;
+
+            $("#MyModalBodyEdit").load(url, function () {
+                $("#myEditModal").modal("show");
+            })
+        }
+
+        ///// => ConfirmDelete() <= \\\\\
+        ConfirmDelete = function (Id) {
+
+
+            $("#hiddenStoreId").val(Id);
+
+            $("#myDeleteModal").modal('show');
+
+        }
+
+
+        ///// => DeleteProduct() <= \\\\\
+        DeleteProduct = function () {
+
+
+            $("#loaderDiv").show();
+
+
+            var storId = $("#hiddenStoreId").val();
+
+
+            $.ajax({
+
+                type: "POST",
+                url: "/Store/DeleteStore ",
+                data: { Id: storId },
+                success: function (result) {
+
+                    $("#loaderDiv").hide();
+
+
+                    $("#myDeleteModal").modal("hide");
+
+                    $("#row_" + storId).remove();
+
+                }
+
+            })
+
+        }
+    })
+
+</script>

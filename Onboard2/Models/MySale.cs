@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
+
+namespace Onboard2.Models
+{
+    public class MySale
+    {
+        public int Id { get; set; }
+        [Required(ErrorMessage = "Please select product Name")]
+        [DisplayName("Product")]
+        public string ProductName { get; set; }
+        [Required(ErrorMessage = "Please input Customer's Name")]
+        [DisplayName("Customer")]
+        public string CustomerName { get; set; }
+        [DisplayName("Store")]
+        [Required(ErrorMessage = "Please input store Name")]
+        public string StoreName { get; set; }
+        [DisplayName("Date")]
+        [Required(ErrorMessage = "Please input date sold")]
+        public DateTime DateSold { get; set; }
+
+      
+       
+    }
+}

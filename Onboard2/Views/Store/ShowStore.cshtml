@@ -1,0 +1,28 @@
+﻿<table class="table table-bordered">
+    @if (ViewBag.StoreList != null)
+    {
+
+        foreach (var item in ViewBag.StoreList)
+        {
+            <tr>
+                <td><b>Name</b></td>
+                <td>@item.Name</td>
+            </tr>
+            <tr>
+                <td><b>Address</b></td>
+                <td>@item.Address</td>
+            </tr>
+
+        }
+    }
+
+
+
+
+</table>
+
+
+
+
+
+

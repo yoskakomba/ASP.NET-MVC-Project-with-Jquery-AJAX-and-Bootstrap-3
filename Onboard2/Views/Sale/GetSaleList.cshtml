@@ -1,0 +1,241 @@
+﻿@model IEnumerable<Onboard2.Models.MySale>
+
+@{
+    ViewBag.Title = "Index";
+    //Layout = null;
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<link href="~/Content/bootstrap-flatly.css" rel="stylesheet" />
+<script src="~/Scripts/bootstrap.min.js"></script>
+
+<br />
+<a href="#" class="btn btn-warning" onclick="AddEditProductSold(0)">Insert New Sale</a>
+<br /><br />
+
+<table class="table table-striped">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ProductName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CustomerName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StoreName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateSold)
+        </th>
+        <th>Details</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr id="row_@item.Id">
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StoreName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateSold)
+            </td>
+            <td><a href="#" class="btn btn-info btn-sm" onclick="ShowSale(@item.Id)"><i class="glyphicon glyphicon-eye-open"></i> Details</a> </td>
+
+            <td><a href="#" class="btn btn-success btn-sm" onclick="AddEditProductSold(@item.Id)"><i class="glyphicon glyphicon-pencil"></i> Edit</a> </td>
+
+            <td><a href="#" class="btn btn-danger btn-sm" onclick="ConfirmDelete(@item.Id)"><i class="glyphicon glyphicon-trash "></i> Delete</a> </td>
+        </tr>
+    }
+
+</table>
+
+<!-- CREATE MODAL -->
+<div class="modal fade" id="myCreateModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">Add/Edit Product</h3>
+            </div>
+            <div class="modal-body" id="myModalBodyCreate">
+               
+                
+                <div style="text-align:center;display:none" id="loaderDiv">
+                    <img src="~/Content/InternetSlowdown_Day.gif" width="150" />
+                </div>
+
+            </div>
+            
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- DELETE MODAL -->
+<div class="modal fade" id="myDeleteModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">Delete Sale</h3>
+            </div>
+            <div class="modal-body">
+                <h4>Are you sure ? You want to delete this. </h4>
+
+                <div style="text-align:center;display:none" id="loaderDiv">
+                    <img src="~/Content/InternetSlowdown_Day.gif" width="150" />
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                <a href="#" class="btn btn-success" onclick="DeleteSale()">Confirm</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SHOW MODAL -->
+
+<div class="modal fade" id="myShowModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">Details</h3>
+            </div>
+            <div class="modal-body" id="MyModalBodyShow">
+
+                <!-- THIS PART WILL BE INSERTED WITH PARTIAL VIEW ShowProduct.cshtml -->
+
+
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- EDIT MODAL -->
+
+<div class="modal fade" id="myEditModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">AddEdit Product</h3>
+            </div>
+            <div class="modal-body" id="MyModalBodyEdit">
+
+                <!-- THIS PART WILL BE INSERTED WITH PARTIAL VEIW .cshtml -->
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@*hidden field for storing current Id*@
+<input type="hidden" id="hiddenSaleId" />
+
+
+<script>
+
+    var ShowSale;
+    var ConfirmDelete;
+    var DeleteSale;
+    var ConfirmAddProductSold;
+    var AddEditProductSold;
+
+    $(document).ready(function () {
+
+        ///// => ShowSale() <= \\\\\
+        ShowSale = function (Id) {
+            $.ajax({
+
+                type: "POST",
+                url: "/Sale/ShowSale",
+                data: { Id: Id },
+                success: function (response) {
+                    $("#MyModalBodyShow").html(response);
+                    $("#myShowModal").modal("show");
+                    
+                }
+
+            })
+        }
+
+        // load the modal
+        AddEditProductSold = function (Id) {
+            $.ajax({
+
+                type: "POST",
+                url: "/Sale/AddEditProductSold?Id=" + Id,
+                data: { Id: Id },
+                success: function (response) {
+                    $("#MyModalBodyEdit").html(response);
+                    $("#myEditModal").modal("show");
+                    
+                }
+
+            })
+        }
+        
+
+        ///// => ConfirmDelete() <= \\\\\
+        ConfirmDelete = function (Id) {
+            $("#hiddenSaleId").val(Id);
+            $("#myDeleteModal").modal('show');
+
+        }
+
+
+        ///// => DeleteSale() <= \\\\\
+        DeleteSale = function () {
+            $("#loaderDiv").show();
+            var saleId = $("#hiddenSaleId").val();
+
+            $.ajax({
+
+                type: "POST",
+                url: "/Sale/DeleteSale ",
+                data: { Id: saleId },
+                success: function (result) {
+
+                    $("#loaderDiv").hide();
+                    $("#myDeleteModal").modal("hide");
+                    $("#row_" + saleId).remove();
+
+                }
+
+            })
+
+        }
+
+     
+    })
+</script>

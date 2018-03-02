@@ -1,0 +1,31 @@
+﻿<table class="table table-bordered">
+    @if (ViewBag.SaleList != null)
+    {
+
+        foreach (var item in ViewBag.SaleList)
+        {
+            <tr>
+                <td><b>Product Name</b></td>
+                <td>@item.ProductName</td>
+            </tr>
+            <tr>
+                <td><b>Customer Name</b></td>
+                <td>@item.CustomerName</td>
+            </tr>
+            <tr>
+                <td><b>Store Name</b></td>
+                <td>@item.StoreName</td>
+            </tr>
+            <tr>
+                <td><b>Date Sold</b></td>
+                <td>@item.DateSold</td>
+            </tr>
+        }
+    }
+
+</table>
+
+
+
+
+

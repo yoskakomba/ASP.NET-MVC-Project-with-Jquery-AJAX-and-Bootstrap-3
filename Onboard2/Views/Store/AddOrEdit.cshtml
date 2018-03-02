@@ -1,0 +1,97 @@
+﻿@model Onboard2.Models.MyStore
+<div>
+
+    <form id="myForm" class="form-horizontal">
+        @Html.HiddenFor(m => m.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Name, new { @class = "form-control", @placeholder = "Name" })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Address, new { @class = "form-control", @placeholder = "Address" })
+                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+            </div>
+
+
+        </div>
+
+        <div class="form-group">
+
+            <div style="text-align: center" class="col-md-4 col-md-offset-2">
+
+                <a href="#" id="btnSubmit" class="btn btn-success btn-block">
+
+                    @if (Model.Id > 0)
+                    {
+                        <span>Update</span>
+                    }
+                    else
+                    {
+                        <span>Save</span>
+
+                    }
+                </a>
+
+            </div>
+        </div>
+
+
+    </form>
+
+    <!--GIF LOADER WHEN THE BUTTON IS SUBMITTED-->
+    <div id="loaderDiv" style="text-align: center; display: none">
+        <img src="~/Content/InternetSlowdown_Day.gif" width="64" />
+    </div>
+
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+
+        $("#btnSubmit").click(function () {
+            debugger
+            $("#loaderDiv").show();// => showing loader gif when the button is submitted
+            var data = $("#myForm").serialize();// => give me the whole input data
+
+            var Name = $("#Name").val();
+            var Address = $("#Address").val();
+            if (Name == "" || Name == undefined) {
+                alert("Please input customer's name");
+            }
+
+            if (Address == "" || Address == undefined) {
+                alert("Please input Address");
+            }
+
+            $.ajax({
+
+                type: "POST",
+                url: "/Store/Index",
+                data: data,
+                success: function (response, url) {
+
+                    $("#loaderDiv").hide();// => hide loader gif once the data has been successfully submitted
+                    $("#myCreateModal").modal("hide"); // => hide modal after the data has been successfully submitted
+
+                    location.href = "/Store/Index"; // => redirect to index.cshtml view
+                }
+            })
+        })
+
+
+    })
+
+</script>
+
+
