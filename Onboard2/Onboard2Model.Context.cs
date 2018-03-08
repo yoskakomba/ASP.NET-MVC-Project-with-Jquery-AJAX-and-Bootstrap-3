@@ -29,13 +29,5 @@ namespace Onboard2
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductSold> ProductSolds { get; set; }
         public virtual DbSet<Store> Stores { get; set; }
-
-        public System.Data.Entity.DbSet<Onboard2.Models.MyProduk> MyProduks { get; set; }
-
-        public System.Data.Entity.DbSet<Onboard2.Models.MyCustomer> MyCustomers { get; set; }
-
-        public System.Data.Entity.DbSet<Onboard2.Models.MyStore> MyStores { get; set; }
-
-        public System.Data.Entity.DbSet<Onboard2.Models.MySale> MySales { get; set; }
     }
 }

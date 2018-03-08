@@ -163,7 +163,6 @@
     var AddEditStore;
     var ConfirmDelete;
 
-
     $(document).ready(function () {
 
         ///// => ShowProduct() <= \\\\\
@@ -176,8 +175,6 @@
                 success: function (response) {
                     $("#MyModalBodyShow").html(response);
                     $("#myShowModal").modal("show");
-
-
                 }
 
             })
@@ -187,7 +184,6 @@
         ///// => AddOrEdit() <= \\\\\
         AddEditStore = function (Id) {
             var url = "/Store/AddOrEdit?Id=" + Id;
-
             $("#MyModalBodyEdit").load(url, function () {
                 $("#myEditModal").modal("show");
             })
@@ -195,25 +191,15 @@
 
         ///// => ConfirmDelete() <= \\\\\
         ConfirmDelete = function (Id) {
-
-
             $("#hiddenStoreId").val(Id);
-
             $("#myDeleteModal").modal('show');
-
         }
 
 
         ///// => DeleteProduct() <= \\\\\
         DeleteProduct = function () {
-
-
             $("#loaderDiv").show();
-
-
             var storId = $("#hiddenStoreId").val();
-
-
             $.ajax({
 
                 type: "POST",
@@ -222,10 +208,7 @@
                 success: function (result) {
 
                     $("#loaderDiv").hide();
-
-
                     $("#myDeleteModal").modal("hide");
-
                     $("#row_" + storId).remove();
 
                 }

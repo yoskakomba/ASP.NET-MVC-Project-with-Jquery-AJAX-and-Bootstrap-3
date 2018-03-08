@@ -17,13 +17,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("KeysOnboarding #2", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("KeysOnboarding #2", "GetProductList", "Product", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Products", "Index", "Product")</li>
-                    <li>@Html.ActionLink("Customers", "Index", "Customer")</li>
-                    <li>@Html.ActionLink("Stores", "Index", "Store")</li>
+                    <li>@Html.ActionLink("Products", "GetProductList", "Product")</li>
+                    <li>@Html.ActionLink("Customers", "GetCustomerList", "Customer")</li>
+                    <li>@Html.ActionLink("Stores", "GetStoreList", "Store")</li>
                     <li>@Html.ActionLink("Sales", "GetSaleList", "Sale")</li>
 
                 </ul>
@@ -43,11 +43,13 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+
     @RenderSection("scripts", required: false)
-    <script src="~/Scripts/Scripts.js"></script>
-    <script src="~/Scripts/notify.js"></script>
-    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-    
+
+
+
 </body>
 </html>

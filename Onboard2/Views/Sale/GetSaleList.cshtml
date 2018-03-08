@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Onboard2.Models.MySale>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Sale List";
     //Layout = null;
 }
 
@@ -172,7 +172,7 @@
     var AddEditProductSold;
 
     $(document).ready(function () {
-
+        
         ///// => ShowSale() <= \\\\\
         ShowSale = function (Id) {
             $.ajax({
@@ -183,7 +183,6 @@
                 success: function (response) {
                     $("#MyModalBodyShow").html(response);
                     $("#myShowModal").modal("show");
-                    
                 }
 
             })
@@ -199,12 +198,11 @@
                 success: function (response) {
                     $("#MyModalBodyEdit").html(response);
                     $("#myEditModal").modal("show");
-                    
                 }
 
             })
         }
-        
+
 
         ///// => ConfirmDelete() <= \\\\\
         ConfirmDelete = function (Id) {
@@ -236,6 +234,8 @@
 
         }
 
-     
-    })
+        
+    });
+
+    
 </script>

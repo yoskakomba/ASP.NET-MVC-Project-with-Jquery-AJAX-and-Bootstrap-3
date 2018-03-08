@@ -1,0 +1,160 @@
+﻿
+@model Onboard2.Models.MySale
+
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+
+<div>
+
+    <form id="myForm" class="form-horizontal">
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProductName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="productSelect"></select>
+                @*@Html.DropDownListFor(model => model.ProductName, ViewBag.ProductList as SelectList, "--select--", new { @class = "form-control" })*@
+                @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CustomerName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="customerSelect"></select>
+                @*@Html.DropDownListFor(model => model.CustomerName, ViewBag.CustomerList as SelectList, "--select--", new { @class = "form-control" })*@
+                @Html.ValidationMessageFor(model => model.CustomerName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StoreName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="storeSelect"></select>
+                @*@Html.DropDownListFor(model => model.StoreName, ViewBag.StoreList as SelectList, "--select--", new { @class = "form-control" })*@
+                @Html.ValidationMessageFor(model => model.StoreName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DateSold, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.DateSold, new { @class = "form-control", id = "dateSold", placeholder = "YYYY/DD/MM" })
+                @Html.ValidationMessageFor(model => model.DateSold, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div style="text-align: center" class="col-md-4 col-md-offset-2">
+                <a href="#" id="btnSubmit" class="btn btn-success btn-block">
+                    @if (Model.Id > 0)
+                    {<span>Update</span> }
+                    else
+                    {<span>Save</span>}
+                </a>
+            </div>
+        </div>
+
+    </form>
+
+    <div style="text-align:center;display:none" id="loaderDiv">
+        <img src="~/Content/InternetSlowdown_Day.gif" width="150" />
+    </div>
+
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        debugger
+        loadCustomer();
+        loadProduct();
+        loadStore();
+
+        function loadCustomer() {
+            $.ajax({
+                type: "GET",
+                url: "/Sale/GetCustomerList",
+                success: function (data) {
+                    data.forEach(function (item) {
+                        $('#customerSelect').append($('<option>', { value: item.Id, text: item.Name }));
+                    });
+                    if (@Model.CustomerId !== 0) {
+                        $('#customerSelect').append($('<option>', { value: '@Model.CustomerId', text: '@Model.CustomerName', selected: true }));
+                    } else {
+                        $('#customerSelect').append($('<option>', { value: '@Model.CustomerId', text: 'Select a customer', selected: true }));
+                    }
+                }
+            })
+        }
+
+        function loadProduct() {
+            $.ajax({
+                type: "GET",
+                url: "/Sale/GetProductList",
+                success: function (data) {
+                    data.forEach(function (item) {
+                        $('#productSelect').append($('<option>', { value: item.Id, text: item.Name }));
+                    });
+                    if (@Model.ProductId !== 0) {
+                        $('#productSelect').append($('<option>', { value: '@Model.ProductId', text: '@Model.ProductName', selected: true }));
+                    } else {
+                        $('#productSelect').append($('<option>', { value: '@Model.ProductId', text: 'Select a product', selected: true }));
+                    }
+                }
+            })
+        }
+
+        function loadStore() {
+            $.ajax({
+                type: "GET",
+                url: "/Sale/GetStoreList",
+                success: function (data) {
+                    data.forEach(function (item) {
+                        $('#storeSelect').append($('<option>', { value: item.Id, text: item.Name }));
+                    });
+
+                    if (@Model.StoreId !== 0) {
+                        $('#storeSelect').append($('<option>', { value: '@Model.StoreId', text: '@Model.StoreName', selected: true }));
+                    } else {
+                        $('#storeSelect').append($('<option>', { value: '@Model.StoreId', text: 'Select a store', selected: true }));
+                    }
+                }
+            })
+        }
+
+        $("#btnSubmit").click(function () {
+            var CustomerId = $('#customerSelect');
+            var ProductId = $('#productSelect');
+            var StoreId = $('#storeSelect');
+            var DateSold = $('#dateSold');
+            var Id = @Model.Id;
+
+            var myData = {
+                Id: Id,
+                CustomerId: CustomerId.val(),
+                ProductId: ProductId.val(),
+                StoreId: StoreId.val(),
+                DateSold: DateSold.val()
+            }
+
+            if (myData.CustomerId !== "0" && myData.ProductId !== "0" && myData.StoreId !== "0") {
+                $.ajax({
+                    type: "POST",
+                    url: "/Sale/UpdateOrCreateProductSold",
+                    data: myData,
+                    dataType: "json",
+                    success: function (r) {
+                        window.location.reload("../Sale/GetSaleList");
+                    }
+                })
+            }
+        })
+
+    });
+
+
+
+
+</script>

@@ -234,10 +234,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
-    <Content Include="Scripts\notify.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Scripts\Scripts.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -252,18 +250,18 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Product\Index.cshtml" />
+    <Content Include="Views\Product\GetProductList.cshtml" />
     <Content Include="Views\Product\ShowProduct.cshtml" />
     <Content Include="Views\Product\AddOrEdit.cshtml" />
-    <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\Customer\GetCustomerList.cshtml" />
     <Content Include="Views\Customer\ShowCustomer.cshtml" />
     <Content Include="Views\Customer\AddOrEdit.cshtml" />
-    <Content Include="Views\Store\Index.cshtml" />
+    <Content Include="Views\Store\GetStoreList.cshtml" />
     <Content Include="Views\Store\ShowStore.cshtml" />
     <Content Include="Views\Store\AddOrEdit.cshtml" />
     <Content Include="Views\Sale\GetSaleList.cshtml" />
     <Content Include="Views\Sale\ShowSale.cshtml" />
-    <Content Include="Views\Sale\Partial2.cshtml" />
+    <Content Include="Views\Sale\AddOrEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

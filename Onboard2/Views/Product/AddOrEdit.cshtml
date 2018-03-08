@@ -1,4 +1,8 @@
 ﻿@model Onboard2.Models.MyProduk
+
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+
 <div>
 
     <form id="myForm" class="form-horizontal">
@@ -64,22 +68,21 @@
             $("#loaderDiv").show();// => showing loader gif when the button is submitted
             var data = $("#myForm").serialize();// => give me the whole input data
 
-            var Name = $("#Name").val();
-            if (Name == "" || Name == undefined) {
-                alert("Please input product name");
+            if (!$("#myForm").valid()) {
+                return false;
             }
 
             $.ajax({
 
                 type: "POST",
-                url: "/Product/Index",
+                url: "/Product/UpdateOrCreateProduct",
                 data: data,
                 success: function (response, url) {
 
                     $("#loaderDiv").hide();// => hide loader gif once the data has been successfully submitted
                     $("#myCreateModal").modal("hide"); // => hide modal after the data has been successfully submitted
-                    
-                    location.href = "/Product/Index"; // => redirect to index.cshtml view
+
+                    location.href = "/Product/GetProductList"; // => redirect to index.cshtml view
                 }
             })
         })

@@ -29,7 +29,7 @@
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="CustomerId" Type="int" Nullable="false" />
           <Property Name="StoreId" Type="int" Nullable="false" />
-          <Property Name="DateSold" Type="smalldatetime" Nullable="false" />
+          <Property Name="DateSold" Type="datetime" />
         </EntityType>
         <EntityType Name="Stores">
           <Key>
@@ -123,7 +123,7 @@
           <Property Name="ProductId" Type="Int32" Nullable="false" />
           <Property Name="CustomerId" Type="Int32" Nullable="false" />
           <Property Name="StoreId" Type="Int32" Nullable="false" />
-          <Property Name="DateSold" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="DateSold" Type="DateTime" Precision="3" Nullable="true" />
           <NavigationProperty Name="Customer" Relationship="Self.FK_ProductSolds_Customers" FromRole="ProductSolds" ToRole="Customers" />
           <NavigationProperty Name="Product" Relationship="Self.FK_ProductSolds_Products" FromRole="ProductSolds" ToRole="Products" />
           <NavigationProperty Name="Store" Relationship="Self.FK_ProductSolds_Stores" FromRole="ProductSolds" ToRole="Stores" />

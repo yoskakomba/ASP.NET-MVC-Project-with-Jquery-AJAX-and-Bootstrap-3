@@ -11,7 +11,7 @@ namespace Onboard2.Controllers
     public class ProductController : Controller
     {
         // PRODUCT LIST VIEW
-        public ActionResult Index()
+        public ActionResult GetProductList()
         {
             using (var db = new Onboard2DbContext())
             {
@@ -25,50 +25,7 @@ namespace Onboard2.Controllers
                 return View(product);
             }
         }
-
-        // UPDATE OR CREATE NEW
-        [HttpPost]
-        public ActionResult Index(MyProduk model)
-        {
-            try
-            {
-                Onboard2DbContext db = new Onboard2DbContext();
-                
-                if (model.Id > 0)
-                {
-                    //update
-                    Product prod = db.Products.SingleOrDefault(x => x.Id == model.Id);
-
-                    prod.Id = model.Id;
-                    prod.Name = model.Name;
-                    prod.Price = model.Price;
-                    db.SaveChanges();
-
-
-                }
-                else
-                {
-                    //Insert
-                    Product prod = new Product();
-                    prod.Name = model.Name;
-                    prod.Price = model.Price;
-                    
-                    db.Products.Add(prod);
-                    db.SaveChanges();
-
-                }
-
-                return RedirectToAction("Index");
-
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-
-        }
-
+        
         // DELETE
         public JsonResult DeleteProduct(int Id)
         {
@@ -83,7 +40,6 @@ namespace Onboard2.Controllers
                 if (prodsold != null) db.ProductSolds.Remove(prodsold);
                 if (prodid != null) db.ProductSolds.Remove(prodid);
                 db.SaveChanges();
-                
 
                 return Json(JsonRequestBehavior.AllowGet);
             }
@@ -93,7 +49,6 @@ namespace Onboard2.Controllers
         public ActionResult ShowProduct(int Id)
         {
             Onboard2DbContext db = new Onboard2DbContext();
-
             List<MyProduk> listProd = db.Products.Where(x => x.Id == Id).Select(x => new MyProduk()
             {
                 Name = x.Name,
@@ -102,10 +57,7 @@ namespace Onboard2.Controllers
             }).ToList();
 
             ViewBag.ProductList = listProd;
-
             return PartialView("ShowProduct");
-
-             
         }
 
         // ADD OR EDIT
@@ -113,22 +65,51 @@ namespace Onboard2.Controllers
         {
             Onboard2DbContext db = new Onboard2DbContext();
             MyProduk model = new MyProduk();
-
             if (Id > 0)
             {
                 Product prod = db.Products.SingleOrDefault(x => x.Id == Id);
                 model.Id = prod.Id;
                 model.Name = prod.Name;
                 model.Price = prod.Price;
-
             }
             
             return PartialView("AddOrEdit", model);
-
-
         }
 
+        // UPDATE OR CREATE NEW
+        [HttpPost]
+        public ActionResult UpdateOrCreateProduct(MyProduk model)
+        {
+            try
+            {
+                Onboard2DbContext db = new Onboard2DbContext();
+                if (model.Id > 0)
+                {
+                    //update
+                    Product prod = db.Products.SingleOrDefault(x => x.Id == model.Id);
+                    prod.Id = model.Id;
+                    prod.Name = model.Name;
+                    prod.Price = model.Price;
+                    db.SaveChanges();
+                }
+                else
+                {
+                    //Insert
+                    Product prod = new Product();
+                    prod.Name = model.Name;
+                    prod.Price = model.Price;
+                    db.Products.Add(prod);
+                    db.SaveChanges();
+                }
 
+                return RedirectToAction("GetProductList");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
     }
 
 

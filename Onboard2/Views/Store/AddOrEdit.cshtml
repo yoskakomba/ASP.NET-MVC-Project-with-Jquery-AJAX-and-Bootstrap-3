@@ -1,4 +1,8 @@
 ﻿@model Onboard2.Models.MyStore
+
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+
 <div>
 
     <form id="myForm" class="form-horizontal">
@@ -64,27 +68,21 @@
             $("#loaderDiv").show();// => showing loader gif when the button is submitted
             var data = $("#myForm").serialize();// => give me the whole input data
 
-            var Name = $("#Name").val();
-            var Address = $("#Address").val();
-            if (Name == "" || Name == undefined) {
-                alert("Please input customer's name");
-            }
-
-            if (Address == "" || Address == undefined) {
-                alert("Please input Address");
+            if (!$("#myForm").valid()) {
+                return false;
             }
 
             $.ajax({
 
                 type: "POST",
-                url: "/Store/Index",
+                url: "/Store/UpdateOrCreateStore",
                 data: data,
                 success: function (response, url) {
 
                     $("#loaderDiv").hide();// => hide loader gif once the data has been successfully submitted
                     $("#myCreateModal").modal("hide"); // => hide modal after the data has been successfully submitted
 
-                    location.href = "/Store/Index"; // => redirect to index.cshtml view
+                    location.href = "/Store/GetStoreList"; // => redirect to index.cshtml view
                 }
             })
         })

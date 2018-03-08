@@ -26,7 +26,7 @@ namespace Onboard2.Controllers
                 return View(saleList);
             }
         }
-        
+
         // SHOW DETAILS
         public ActionResult ShowSale(int Id)
         {
@@ -54,93 +54,110 @@ namespace Onboard2.Controllers
                 var prodsold = db.ProductSolds.FirstOrDefault(x => x.Id == Id);
                 if (prodsold != null) db.ProductSolds.Remove(prodsold);
                 db.SaveChanges();
-                
+
                 return Json(JsonRequestBehavior.AllowGet);
             }
         }
 
-        // ADD OR EDIT
+        // ADD OR EDIT CHECKING ID IF 0 OPEN PARTIAL VIEW CREATE MODAL
         public ActionResult AddEditProductSold(int Id)
         {
             var db = new Onboard2DbContext();
-            
-            List<Product> list = db.Products.ToList();
-            ViewBag.ProductList = new SelectList(list, "Id", "Name");
-
-            List<Customer> customerlist = db.Customers.ToList();
-            ViewBag.CustomerList = new SelectList(customerlist, "Id", "Name");
-
-            List<Store> storelist = db.Stores.ToList();
-            ViewBag.StoreList = new SelectList(storelist, "Id", "Name");
-
             var model = new MySale();
-
-            if(Id > 0)
+            if (Id > 0)
             {
                 var prodsold = db.ProductSolds.SingleOrDefault(x => x.Id == Id);
+                var customer = db.Customers.SingleOrDefault(c => c.Id == prodsold.CustomerId);
+                var store = db.Stores.SingleOrDefault(s => s.Id == prodsold.StoreId);
+                var product = db.Products.SingleOrDefault(p => p.Id == prodsold.ProductId);
+
                 model.Id = prodsold.Id;
-                model.ProductName = prodsold.ProductId.ToString();
-                model.CustomerName = prodsold.CustomerId.ToString();
-                model.StoreName = prodsold.StoreId.ToString();
+                model.ProductId = product.Id;
+                model.ProductName = product.Name;
+                model.CustomerId = customer.Id;
+                model.CustomerName = customer.Name;
+                model.StoreId = store.Id;
+                model.StoreName = store.Name;
                 model.DateSold = prodsold.DateSold;
             }
-
-            return PartialView("Partial2", model);
-
-
+            return PartialView("AddOrEdit", model);
         }
 
         // GET POST ADD OR EDIT
         [HttpPost]
-        public ActionResult CreateProductSold(MySale model)
+        public ActionResult UpdateOrCreateProductSold(ProductSold model)
         {
-            try
+           
+            var db = new Onboard2DbContext();
+            if (model.Id > 0)
             {
-                var db = new Onboard2DbContext();
+                // UPDATE
+                var prodsold = db.ProductSolds.SingleOrDefault(x => x.Id == model.Id);
 
-                List<Product> list = db.Products.ToList();
-                ViewBag.ProductList = new SelectList(list, "Id", "Name");
-
-                List<Customer> customerlist = db.Customers.ToList();
-                ViewBag.CustomerList = new SelectList(customerlist, "Id", "Name");
-
-                List<Store> storelist = db.Stores.ToList();
-                ViewBag.StoreList = new SelectList(storelist, "Id", "Name");
-
-                if (model.Id > 0)
-                {
-                    // UPDATE
-                    var prodsold = db.ProductSolds.SingleOrDefault(x => x.Id == model.Id);
-
-                    prodsold.ProductId = Convert.ToInt32(model.ProductName);
-                    prodsold.CustomerId = Convert.ToInt32(model.CustomerName);
-                    prodsold.StoreId = Convert.ToInt32(model.StoreName);
-                    prodsold.DateSold = model.DateSold;
-                    db.SaveChanges();
-                }
-
-                else
-                {
-                    // INSERT
-                    ProductSold prodsold = new ProductSold();
-                    prodsold.ProductId = Convert.ToInt32(model.ProductName);
-                    prodsold.CustomerId = Convert.ToInt32(model.CustomerName);
-                    prodsold.StoreId = Convert.ToInt32(model.StoreName);
-                    prodsold.DateSold = model.DateSold;
-
-                    db.ProductSolds.Add(prodsold);
-                    db.SaveChanges();
-
-                }
-
-                return RedirectToAction("GetSaleList");
+                prodsold.ProductId = model.ProductId;
+                prodsold.CustomerId = model.CustomerId;
+                prodsold.StoreId = model.StoreId;
+                prodsold.DateSold = model.DateSold;
+                db.SaveChanges();
             }
-            catch (Exception ex)
-            {
 
-                throw ex;
+            else
+            {
+                // INSERT
+                ProductSold prodsold = new ProductSold();
+                prodsold.ProductId = model.ProductId;
+                prodsold.CustomerId = model.CustomerId;
+                prodsold.StoreId = model.StoreId;
+                prodsold.DateSold = model.DateSold;
+
+                db.ProductSolds.Add(prodsold);
+                db.SaveChanges();
+                    
+            }
+            return Json(model);
+        }
+            
+        // LOAD CONTROLLER FOR DROPDOWN SELECT
+        public ActionResult GetCustomerList()
+        {
+            using (var db = new Onboard2DbContext())
+            {
+                var allCust = db.Customers.Select(x => new MyCustomer
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Address = x.Address
+                }).ToList();
+                return Json(allCust, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult GetProductList()
+        {
+            using (var db = new Onboard2DbContext())
+            {
+                var allProd = db.Products.Select(x => new MyProduk
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList();
+                return Json(allProd, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult GetStoreList()
+        {
+            using (var db = new Onboard2DbContext())
+            {
+                var allStor = db.Stores.Select(x => new MyStore
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList();
+                return Json(allStor, JsonRequestBehavior.AllowGet);
             }
         }
     }
 
+    
 }
